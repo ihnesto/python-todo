@@ -40,6 +40,16 @@ def removeTask() :
 
     return redirect('/')
 
+@app.route('/edit-task', methods = [ 'GET' ])
+def editTask() :
+    taskId = int(request.args.get('id'))
+    name = ''
+    for task in tasks :
+        if task.get('id') == taskId :
+            name = task.get('name')
+
+    return render_template('item-edit.html', taskValue = name, id = taskId)
+    
 if __name__ == '__main__' :
     app.run(debug=True)
 
