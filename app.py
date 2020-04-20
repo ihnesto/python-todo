@@ -29,6 +29,16 @@ def addTask() :
     tasks.append(task)
     return redirect('/')
 
+@app.route('/remove-task', methods = [ 'GET' ])
+def removeTask() :
+    taskId = int(request.args.get('id'))
+
+    for task in tasks :
+        print(task)
+        if task.get('id') == taskId :
+            tasks.remove(task)
+
+    return redirect('/')
 
 if __name__ == '__main__' :
     app.run(debug=True)
