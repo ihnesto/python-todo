@@ -49,7 +49,17 @@ def editTask() :
             name = task.get('name')
 
     return render_template('item-edit.html', taskValue = name, id = taskId)
-    
+
+@app.route('/save-task', methods = [ 'POST' ])
+def saveTask() :
+    taskName = request.form.get('edit-task')
+    taskId = int(request.form.get('id'))
+   
+    for task in tasks :
+       if task.get('id') == taskId :
+           task['name'] = taskName
+    return redirect('/')
+
 if __name__ == '__main__' :
     app.run(debug=True)
 
