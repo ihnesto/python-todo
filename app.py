@@ -18,7 +18,7 @@ except :
 
 def writeTasks() :
     tasksFile = open('./tasks.json', 'w')
-    tasks = json.dump(tasks, tasksFile, indent = 4)
+    json.dump(tasks, tasksFile, indent = 4)
     tasksFile.close()
 
 @app.route('/')
