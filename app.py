@@ -1,12 +1,25 @@
 from flask import Flask, render_template, request, redirect
+import json
 
 app = Flask(__name__)
 
-tasks = [
-    { "id" : 1, "name" : 'Watch TV'},
-    { "id" : 2, "name" : 'buy eggs'}
+#tasks = [
+    #  { "id" : 1, "name" : 'Watch TV'},
+    #  { "id" : 2, "name" : 'buy eggs'}
    
-]
+#]
+
+try :
+    tasksFile = open('./tasks.json', 'r')
+    tasks = json.load(tasksFile)
+    tasksFile.close()
+except :
+    tasks = []
+
+def writeTasks() :
+    tasksFile = open('./tasks.json', 'w')
+    tasks = json.dump(tasks, tasksFile, indent = 4)
+    tasksFile.close()
 
 @app.route('/')
 def index() :
@@ -27,6 +40,8 @@ def addTask() :
         
     }
     tasks.append(task)
+    
+    writeTasks()
     return redirect('/')
 
 @app.route('/remove-task', methods = [ 'GET' ])
@@ -37,7 +52,8 @@ def removeTask() :
         print(task)
         if task.get('id') == taskId :
             tasks.remove(task)
-
+    
+    writeTasks()
     return redirect('/')
 
 @app.route('/edit-task', methods = [ 'GET' ])
@@ -58,6 +74,8 @@ def saveTask() :
     for task in tasks :
        if task.get('id') == taskId :
            task['name'] = taskName
+
+    writeTasks()
     return redirect('/')
 
 if __name__ == '__main__' :
