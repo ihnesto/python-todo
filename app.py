@@ -12,6 +12,24 @@ tasks = [
 def index() :
     return render_template('index.html', tasks = tasks)
 
+@app.route('/add-task', methods = [ 'POST' ])
+def addTask() :
+    taskName = request.form.get('new-task')
+
+    m = 0
+    for task in tasks :
+        if task.get('id') > m :
+            m = task.get('id')
+
+    task = {
+        'id' : m + 1,
+        "name" : taskName
+        
+    }
+    tasks.append(task)
+    return redirect('/')
+
+
 if __name__ == '__main__' :
     app.run(debug=True)
 
