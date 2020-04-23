@@ -37,7 +37,7 @@
 
                     {% for task in tasks %}
                     <li class="list-group-item d-flex">
-                        <span class="flex-grow-1 fz-22">{{ task.name }}</span>
+                        <span class="flex-grow-1 fz-22">{{ task.content }}</span>
                     
                         <span>
                             <a class="btn btn-success" href="/edit-task?id={{ task.id }}">Edit</a>
