@@ -19,6 +19,7 @@ class Task(db.Model) :
     id = db.Column(db.Integer, primary_key = True )
     content = db.Column(db.String(100), nullable = False)
     creationDate = db.Column(db.DateTime)
+    expiredDate = db.Column(db.DateTime)
 
     def __repr__(self) :
         return f'<Task {self.content}>'
@@ -48,15 +49,45 @@ class Task(db.Model) :
 @app.route('/')
 def index() :
 
-    tasks = Task.query.all()
-    #print(tasks)
-    return render_template('index.html', tasks = tasks)
+    order = request.args.get('sort')
+    if order is not None :
+        if order == 'asc' :
+            tasks = Task.query.order_by(Task.expiredDate).all()
+        elif order == 'desc' :
+             tasks = Task.query.order_by(Task.expiredDate.desc()).all()
+        else :
+             tasks = Task.query.all()
+    else :
+        tasks = Task.query.all()
+    print(tasks)
+    modTasks = []
+    for task in tasks :
+        print(type(task.expiredDate))
+        fTime = task.expiredDate
+        #fTime = datetime.strptime('2020-05-04 22:33:44', '%Y-%m-%d %H:%M:%S')
+        nTime = datetime.now()
+        diff = (fTime - nTime).total_seconds()
+        if diff > 0 :
+            marked = False
+        else :
+            marked = True
+        modTasks.append({
+            "task": task,
+            "marked": marked
+        })
+
+    return render_template('index.html', tasks = modTasks)
 
 @app.route('/add-task', methods = [ 'POST' ])
 def addTask() :
     taskName = request.form.get('new-task')
+    expDate = request.form.get('exp-date')
+    expTime = request.form.get('exp-time')
+    print(expDate, expTime)
 
-    task = Task(content = taskName, creationDate = datetime.now())
+    fullDateTime = f'{expDate} {expTime}:00'
+    #print(fullDateTime)
+    task = Task(content = taskName, creationDate = datetime.now(), expiredDate = fullDateTime)
 
     db.session.add(task)
     db.session.commit()
@@ -99,21 +130,31 @@ def editTask() :
     name = ''
 
     task = Task.query.filter_by(id = taskId).first()
-    name = task.content
+    name = {
+        'content' : task.content,
+        'expiredDate' : datetime.date(task.expiredDate),
+        'expiredTime' : datetime.time(task.expiredDate)
+
+    } # .content
+
+
     # for task in tasks :
     #     if task.get('id') == taskId :
     #         name = task.get('name')
 
-    return render_template('item-edit.html', taskValue = name, id = taskId)
+    return render_template('item-edit.html', task = name, id = taskId)
 
 @app.route('/save-task', methods = [ 'POST' ])
 def saveTask() :
     taskName = request.form.get('edit-task')
+    
     taskId = int(request.form.get('id'))
-   
+    expDate = request.form.get('exp-date')
+    expTime = request.form.get('exp-time')
     task = Task.query.filter_by(id = taskId).first()
     # print(task)
     task.content = taskName
+    task.expiredDate =  fullDateTime = f'{expDate} {expTime}'
     db.session.commit()
     # for task in tasks :
     #    if task.get('id') == taskId :

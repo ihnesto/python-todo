@@ -21,15 +21,24 @@
   <body>
     <div class="container">
 
-        <h1 class="text-center mt-5">Todo list</h1>
+        <h1 class="text-center mt-5"><a href="/">Todo list</a></h1>
         
         <p class="text-center mt-2 fz-22">What I need to do</p>
 
         <form class="form-inline col-md-8 offset-md-2 mb-5" action="/add-task" method="POST">
             <input type="text" class="form-control flex-grow-1 mr-2" id="new-task" placeholder="Enter new task" name="new-task">
+            <input type="date" class="form-control mr-2" id="exp-date" name="exp-date">
+            <input type="time" class="form-control mr-2" id="exp-time" name="exp-time">
             <button type="submit" class="btn btn-primary">Add task</button>
         </form>
 
+        <div class="row">
+            <div class="col-md-2 offset-md-6">
+                <span>Sort</span>
+                <a href="/?sort=asc">&uarr;</a>
+                <a href="/?sort=desc">&darr;</a>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-8 offset-md-2">
@@ -37,12 +46,19 @@
 
                     {% for task in tasks %}
                     <li class="list-group-item d-flex">
-                        <span class="flex-grow-1 fz-22">{{ task.content }}</span>
-                    
+                        {% if task.marked %}
+                            <span class="flex-grow-1 fz-22 pt-1" style="color: red;">
+                        {% else %}
+                            <span class="flex-grow-1 fz-22 pt-1" style="color: black;">
+                        {% endif %}
+                            {{ task.task.content }}</span>
+                        <span class="mr-2 fz-22 pt-1">
+                            {{ task.task.expiredDate }}
+                        </span>
                         <span>
-                            <a class="btn btn-success" href="/edit-task?id={{ task.id }}">Edit</a>
+                            <a class="btn btn-success" href="/edit-task?id={{ task.task.id }}">Edit</a>
 
-                            <a class="btn btn-danger" href="/remove-task?id={{ task.id }}">Remove</a>
+                            <a class="btn btn-danger" href="/remove-task?id={{ task.task.id }}">Remove</a>
                         </span>   
                     </li>
                     {% endfor %}
