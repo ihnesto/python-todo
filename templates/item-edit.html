@@ -24,10 +24,10 @@
         <p class="text-center mt-2 fz-22">Change value of item</p>
 
         <form class="form-inline col-md-8 offset-md-2 mb-5" action="/save-task" method="POST">
-            <input type="text" class="form-control flex-grow-1 mr-2" id="new-task" placeholder="Enter new task" name="edit-task" value="{{ task.content }}">
+            <input type="text" class="form-control flex-grow-1 mr-2" id="new-task" placeholder="Enter new task" name="edit-task" value="{{ task.content }}" required>
             <input type="hidden" name="id" value="{{ id }}">
-            <input type="date" class="form-control mr-2" id="exp-date" name="exp-date" value="{{ task.expiredDate }}">
-            <input type="time" class="form-control mr-2" id="exp-time" name="exp-time" value="{{ task.expiredTime }}">
+            <input type="date" class="form-control mr-2" id="exp-date" name="exp-date" value="{{ task.expiredDate }}" required>
+            <input type="time" class="form-control mr-2" id="exp-time" name="exp-time" value="{{ task.expiredTime }}" required>
             <button type="submit" class="btn btn-primary">Save task</button>
           </form>
         
