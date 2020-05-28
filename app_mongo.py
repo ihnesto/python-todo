@@ -31,7 +31,7 @@ def index() :
         tasks = Task.objects.all()
 
     modTasks = []
-    for task in Tasks :
+    for task in tasks :
         fTime = task.expiredDate
         nTime = datetime.now()
         diff = (fTime - nTime).total_seconds()
@@ -55,26 +55,26 @@ def addTask() :
 
     fullDateTime = f'{expDate} {expTime}:00'
     #print(fullDateTime)
-    task = Task(content = TaskName, creationDate = datetime.now(), expiredDate = fullDateTime)
+    task = Task(content = taskName, creationDate = datetime.now(), expiredDate = fullDateTime)
     task.save()
     
     return redirect('/')
 
 @app.route('/remove-task', methods = [ 'GET' ])
 def removeTask() :
-    taskId = int(request.args.get('id'))
+    taskId = request.args.get('id')
 
-    task = Task.objects(_id = taskId).first()
+    task = Task.objects(pk=taskId).first()
     task.delete()
 
     return redirect('/')
 
 @app.route('/edit-task', methods = [ 'GET' ])
 def editTask() :
-    taskId = int(request.args.get('id'))
+    taskId = request.args.get('id')
     name = ''
 
-    task = Task.objects(_id = taskId).first()
+    task = Task.objects(pk=taskId).first()
     name = {
         'content' : task.content,
         'expiredDate' : datetime.date(task.expiredDate),
@@ -85,14 +85,14 @@ def editTask() :
 
 @app.route('/save-task', methods = [ 'POST' ])
 def saveTask() :
-    taskName = request.form.get('edit-Task')
+    taskName = request.form.get('edit-task')
     
-    taskId = int(request.form.get('id'))
+    taskId = request.form.get('id')
     expDate = request.form.get('exp-date')
     expTime = request.form.get('exp-time')
-    task = Task.objects(id = taskId).first()
+    task = Task.objects(pk=taskId).first()
     # print(Task)
-    task.content = TaskName
+    task.content = taskName
     task.expiredDate =  fullDateTime = f'{expDate} {expTime}'
     task.save()
     
